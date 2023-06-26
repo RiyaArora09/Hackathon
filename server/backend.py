@@ -5,11 +5,13 @@ import boto3
 import json
 from time import sleep, perf_counter as pc
 from pprint import pprint
-from flask import Flask
+from flask import Flask, jsonify
 from flask import request
 import asyncio
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 def getSuggestions(contact):
 
@@ -47,7 +49,19 @@ def getSuggestions(contact):
 @app.route('/getResponse', methods=['POST'])
 def login():
     contact = request.get_json()['contact']
-    result = getSuggestions(contact)
+    query = f"\"USER: If user requests for resetting password of Amazon Flex account, then send instructions to reset password from the Document:\"How to reset password?\". If user is experiencing issues with the Amazon Flex app, then send them the HMD 'amazon_flex_app_retry_sync_error'. If user asks payment is not received, then checkout the Doc: \"How to check if Amazon Flex pay is credited?\" and follow the instructions there. If the request is related to questions on onboarding to Amazon Flex, then refer them to the link: \" https://flex.amazon.com \". Based on the previous strategies. Say a request comes, \"{contact}.\", based on previous examples, what action will be taken?. If any document/HMD is there, make sure to mention it and do not add anything which is not speecified. Try to best match it to one of the cases, and give the corresponding suggestion. Do not mix and match. Also, suggestion should be less than 10 words.\n ASSISTANT: \""
+    result = getSuggestions(query)
     print(result['outputs'][0])
-    return result
+    data = {
+        'message': result['outputs'][0],
+        'status': 'success'
+    }
+    return jsonify(data)
      
+@app.route("/")
+def hello_world():
+    data = {
+        'message': 'Hello, world!',
+        'status': 'success'
+    }
+    return jsonify(data)

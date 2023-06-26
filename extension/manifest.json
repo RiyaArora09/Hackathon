@@ -8,7 +8,7 @@
     "content_scripts": [
       {
         "matches": [
-          "*://gamma.aviary.cs.amazon.dev/*"
+          "*://gamma-release.testing.aviary.cs.amazon.dev//*"
         ],
         "js": [
           "content.js"
@@ -25,7 +25,8 @@
     "permissions": [
       "contextMenus",
       "storage",
-      "tabs"
+      "tabs",
+      "http://127.0.0.1:5000/"
     ],
     "icons": {
       "16": "raptor.png"

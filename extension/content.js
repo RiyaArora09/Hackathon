@@ -1,90 +1,58 @@
-// /*
-// This file is a Content Script (https://developer.chrome.com/extensions/content_scripts)
-// This file contains JS code that:
-// * Displays all overlays on top of the webpage
 
-// All the CSS used by the elements here reside in the "content.css" file
-// */
+console.log("Blaa");
 
-// //This creates the bubble that resides on top of the webpage.
-// //This is displayed when nothing is being queried
-// var bubbleDOM = document.createElement('div');
-// bubbleDOM.setAttribute('class', 'before_answer');
+// fetch('https://icanhazdadjoke.com/slack')
+//     .then(data => data.json())
+//     .then(jokeData => {
+//         const jokeText = jokeData.attachments[0].text;
+//         const assistElement = document.getElementById('assist');
+//         assistElement.innerHTML = jokeText;
+//     })
 
-// bubbleDOM.innerHTML = '<div><img src="https://i.ibb.co/jDfvTxs/raptor.png" "></div>';
-// document.body.appendChild(bubbleDOM);
+// try {
+//   console.log("Document", document?.getElementsByClassName('emailBodyContainer--2Tdt5TmqVI'));
+//   console.log("Document 2.0", document?.getElementsByClassName('emailBodyContainer--2Tdt5TmqVI')[0]?.textContent);
+//   console.log("Content", document.getElementsByClassName('emailBodyContainer--2Tdt5TmqVI')[0].textContent,'gurvirqwerty');
 
-
-// //registering a listener. This receiver receives messages primarily
-// //from the background.js code. The received message contains the text
-// //to display in the bubbles after background.js receives the answers from GPT3
-// chrome.runtime.onMessage.addListener(receiver);
-
-
-// //this code dismisses the expanded bubble after the user views the answer
-// //click anywhere on the screen dismisses the bubble and it goes back to the
-// //"before_answer" state
-// window.addEventListener('mousedown', function (e) {
-//   if (bubbleDOM.getAttribute('class') == 'after_answer') {
-//     bubbleDOM.innerHTML = '<div><img src="https://i.ibb.co/jDfvTxs/raptor.png" "></div>';
-//     bubbleDOM.setAttribute('class', 'before_answer');
-
-//   }
-
-
-// });
-
-// //Code to change the contents/layout of the bubble when answers are available
-// function renderBubble(selection) {
-//   console.log("renderBubble called" + selection);
-//   bubbleDOM.setAttribute('class', 'after_answer');
-//   if (selection !=null) {
-//     bubbleDOM.innerHTML = selection;
-//   }
-//   else {
-//     bubbleDOM.innerHTML = "Loading.."
-//   }
+// } catch(error) {
+//   console.log("Error is ", error);
 // }
 
-// //Function handling the message received from background.js. Registered with the
-// //receiver listener
-// function receiver(request, sender, sendResponse) {
-//   console.log("Request received");
-//   if (request == "loading") {
-//     console.log("loading");
-//   }
-//   else if (request.type == "why") {
-//     why_array = request.why_answers;
-//     var textToDisplay = "";
-//     console.log(why_array);
-//     for (i = 0; i < why_array.length; i++) {
-//       textToDisplay += "<div class=\"answer\">" + why_array[i] + "</div>";
-//       if (i != why_array.length - 1) {
-//         textToDisplay += "<div class=\"why\">WHY❓</div>";
-//       }
-//     }
+var value = "Good morning Amazon support, my name is Alex Chapman I am a Level 3 Amazon flex deliverer with over 100 some blocks completed in over 5 months. I had a scheduled block on Sunday June 25th at 4:45am. I continuously have issues with the app freezing and glitching. I've wrote customer service about this situation previously. I've tried to refresh app numerous times and it kept doing the same thing. It caused me to completely miss my block and I don't want that to affect my standing. Could you all please correct that thank you";
 
-//   }
-//   else if (request.type == "what") {
-//     textToDisplay = "<div class=\"answer\">" + request.what_answer + "</div>"
-//   }
-//   else if (request.type == "how") {
-//     textToDisplay = "<div class=\"answer\">" + request.how_answer + "</div>"
-//   }
-//   renderBubble(textToDisplay);
-// }
-fetch('https://icanhazdadjoke.com/slack')
-    .then(data => data.json())
-    .then(jokeData => {
-        const jokeText = jokeData.attachments[0].text;
-        const assistElement = document.getElementById('assist');
-        assistElement.innerHTML = jokeText;
-    })
+fetch('http://127.0.0.1:5000/getResponse', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ contact: value})
+})
+.then(response => {
+    console.log("Response is", response);
+    return response.json();
+})
+.then(data => {
+  console.log("Data is :", data.message);
+  console.log(data); // Handle the response data
+  const assistElement = document.getElementById('assist');
+  assistElement.innerHTML = data.message;
+})
+.catch(error => {
+  console.error('Error:', error);
+});
 
 
-console.log(document.getElementsByClassName('emailBodyContainer--2Tdt5TmqVI')[0].textContent,'gurvirqwerty')
-window.onload = function() {
-    // Code to be executed after the DOM is fully loaded
-    console.log('hello python')
-    // You can call your commands here
-  };
+
+// fetch('http://127.0.0.1:5000')
+//   .then(response => response.json())
+//   .then(data => {
+//     // const jokeText = jokeData.attachments[0].text;
+//     console.log("Data is ", data)
+//     const assistElement = document.getElementById('assist');
+//     assistElement.innerHTML = data.message;
+//   })
+//   .catch(err => {
+//     console.log("Error", err)
+//   })
+
+
